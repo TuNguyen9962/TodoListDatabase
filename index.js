@@ -8,7 +8,7 @@ const hostname = 'localhost';
 const port = 3000;
 
 const server = http.createServer((request, response) => {
-
+  // debugger
   const parsedUrl = url.parse(request.url, true);
   const routeHandler = routes[parsedUrl.pathname];
 
