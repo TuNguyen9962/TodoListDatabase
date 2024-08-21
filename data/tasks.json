@@ -2,7 +2,7 @@
   {
     "taskId": "1",
     "userId": 1,
-    "name": "Todo 1",
+    "name": "Todo 123",
     "isDone": true
   },
   {
@@ -21,12 +21,6 @@
     "taskId": "lzyahi4jl6fevc4vd",
     "userId": "1",
     "name": "tu tu tu tu 3",
-    "isDone": true
-  },
-  {
-    "taskId": "lzyaor6mtrrr7si32",
-    "userId": "1",
-    "name": "Task 123",
     "isDone": true
   }
 ]
