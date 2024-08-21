@@ -12,6 +12,10 @@ function writeResponse (httpCode, message , response, data) {
 function readFileDataJson(tasksFilePath) {
   try {
     const data = fs.readFileSync(tasksFilePath, 'utf8');
+    // Kiểm tra nếu file rỗng
+    if (data.trim().length === 0) {
+      return [];
+    }
     return JSON.parse(data);
   } catch (err) {
     if (err.code === 'ENOENT') {
