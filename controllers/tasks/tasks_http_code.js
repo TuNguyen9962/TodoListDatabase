@@ -8,12 +8,10 @@ const HTTP_STATUS_CODE = {
     message: 'Get task successful',
     status: 200,
   },
-
   UPDATE_TASK_SUCCESSFUL: {
     message: 'Update task successful',
     status: 204,
   },
-
   DELETE_TASK_SUCCESSFUL: {
     message: 'Delete task successful',
     status: 204,
@@ -25,7 +23,15 @@ const HTTP_STATUS_CODE = {
   SYSTEM_ERROR: {
     message: 'SERVER_ERROR',
     status: 500,
-  }
+  },
+  BAD_REQUEST:{
+    message: 'Bad request',
+    status: 400,
+  },
+  TASK_NOT_FOUND:{
+    message: 'Task not found',
+    status: 400,
+  },
 };
 
 module.exports = HTTP_STATUS_CODE;
