@@ -104,8 +104,8 @@ exports.updateUser = (request, response) => {
         helpers.writeFileDataJson(usersDataFilePath, data);
 
         helpers.writeResponse(
-          userHttpCode.USER_UPDATED_SUCCESSFUL.status,
-          userHttpCode.USER_UPDATED_SUCCESSFUL.message,
+          userHttpCode.UPDATE_USER_SUCCESSFUL.status,
+          userHttpCode.UPDATE_USER_SUCCESSFUL.message,
           response,
           data
         );
@@ -132,11 +132,11 @@ exports.deleteUser = (request, response) => {
 
   request.on('end', () => {
     try {
-      const parsedBody = JSON.parse(body); // Giả định rằng body luôn là JSON
+      const parsedBody = JSON.parse(body); // Chuyển body từ dạng string sang JSON
       const userId = parsedBody.userId; // Lấy userId từ body
 
       let data = helpers.readFileDataJson(usersDataFilePath); // Đọc dữ liệu user từ file
-      const userIndex = data.findIndex(user => user.userId == userId);
+      const userIndex = data.findIndex(user => user.userId === userId); // Tìm vị trí user cần xóa
 
       if (userIndex === -1) {
         // Nếu user không tồn tại
@@ -148,13 +148,12 @@ exports.deleteUser = (request, response) => {
         );
       } else {
         // Xóa user
-        debugger
-        data.splice(userIndex, 1); // Xóa user khỏi danh sách
+        data.splice(userIndex, 1); // Xóa user khỏi mảng data
         helpers.writeFileDataJson(usersDataFilePath, data); // Ghi lại dữ liệu vào file
 
         helpers.writeResponse(
-          userHttpCode.USER_DELETED_SUCCESSFUL.status,
-          userHttpCode.USER_DELETED_SUCCESSFUL.message,
+          userHttpCode.DELETE_USER_SUCCESSFUL.status,
+          userHttpCode.DELETE_USER_SUCCESSFUL.message,
           response,
           data
         );
@@ -167,12 +166,10 @@ exports.deleteUser = (request, response) => {
         []
       );
     } finally {
-      response.end();
+      response.end(); // Kết thúc phản hồi
     }
   });
 };
-
-
 
 exports.login = (request, response) => {
   var body = '';

@@ -14,22 +14,29 @@ const HTTP_STATUS_CODE = {
     status: 204,
   },
 
-  DELETE_TASK_SUCCESSFUL: {
-    message: 'Delete task successful',
+  DELETE_USER_SUCCESSFUL: {
+    message: 'Delete user successful',
     status: 204,
   },
+
   USER_AUTHENTICATED_FAILED: {
     message: 'User authentication failed',
     status: 401,
   },
+
   USER_AUTHENTICATED_SUCCESS: {
     message: 'User authentication succeeded',
     status: 200,
   },
+  USER_NOT_FOUND: {
+    message: 'USER NOT FOUND',
+    status: 404,
+  },
+
   SYSTEM_ERROR: {
     message: 'SERVER_ERROR',
     status: 500,
-  },
+  }
 };
 
 module.exports = HTTP_STATUS_CODE;
