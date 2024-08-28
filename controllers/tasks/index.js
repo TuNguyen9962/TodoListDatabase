@@ -30,7 +30,6 @@ exports.getUserTask = (request, response) => {
 exports.createUserTask = (request, response) => {
   try {
     const data = helpers.readFileDataJson(tasksDataFilePath)
-    debugger
     let body = '';
     let task = {};
     request.on('data', chunk => {
@@ -148,7 +147,7 @@ exports.updateUserTask = (request, response) => {
   }
 };
 exports.deleteUserTask = async (request, response) => {
-  debugger
+  const data = helpers.readFileDataJson(tasksDataFilePath)
 
   try {
     let body = '';
