@@ -1,13 +1,13 @@
 const fs = require('fs');
 
 function writeResponse (httpCode, message , response, data) {
-  response.writeHead(httpCode, { 'Content-Type': 'text/plain' });
+  response.writeHead(200, { 'Content-Type': 'text/plain' });
   response.end(JSON.stringify({
     data,
     "message" : message,
     "code" : httpCode  
   }));
-}
+} 
 
 function readFileDataJson(tasksFilePath) {
   try {

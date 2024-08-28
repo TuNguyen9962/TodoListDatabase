@@ -30,7 +30,7 @@ exports.getUserTask = (request, response) => {
 exports.createUserTask = (request, response) => {
   try {
     const data = helpers.readFileDataJson(tasksDataFilePath)
-
+    debugger
     let body = '';
     let task = {};
     request.on('data', chunk => {
@@ -42,7 +42,7 @@ exports.createUserTask = (request, response) => {
       let isDone = parsedBody.isDone;
       let userId = parsedBody.userId;
       if (name && isDone && userId) {
-        let task = {
+        task = {
           taskId: helpers.generateUID(),
           userId: userId,
           name: name,
@@ -54,7 +54,7 @@ exports.createUserTask = (request, response) => {
           tasksHttpCode.TASK_CREATED_SUCCESSFUL.status,
           tasksHttpCode.TASK_CREATED_SUCCESSFUL.message,
           response,
-          data
+          []
         )
         response.end();
       }
@@ -147,16 +147,30 @@ exports.updateUserTask = (request, response) => {
     response.end();
   }
 };
-exports.deleteUserTask = (request, response) => {
+exports.deleteUserTask = async (request, response) => {
+  debugger
+
   try {
-    const data = helpers.readFileDataJson(tasksDataFilePath)
     let body = '';
     let task = {};
     request.on('data', chunk => {
       body += chunk.toString();
     });
     request.on('end', () => {
-      const parsedBody = JSON.parse(body);
+      // const parsedBody = JSON.parse(body);
+      let parsedBody;
+      try {
+        parsedBody = JSON.parse(body);
+      } catch (err) {
+        // Xử lý lỗi khi parse JSON
+        helpers.writeResponse(
+          tasksHttpCode.BAD_REQUEST.status,  // Mã lỗi cho request không hợp lệ
+          'Invalid JSON format',  // Thông báo lỗi cụ thể
+          response,
+          []
+        );
+        return response.end();
+      }
       let taskId = parsedBody.taskId;
 
       if (taskId) {
