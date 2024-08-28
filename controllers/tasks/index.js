@@ -3,7 +3,7 @@ const tasksHttpCode = require('./tasks_http_code')
 const helpers = require('../../helpers/utils')
 const path = require('path');
 const fs = require('fs');
-
+const url = require('url');
 // Đường dẫn đến file JSON
 const tasksDataFilePath = path.join(__dirname, '../../data/tasks.json');
 
@@ -147,63 +147,44 @@ exports.updateUserTask = (request, response) => {
   }
 };
 exports.deleteUserTask = async (request, response) => {
+  debugger
   const data = helpers.readFileDataJson(tasksDataFilePath)
 
   try {
-    let body = '';
-    let task = {};
-    request.on('data', chunk => {
-      body += chunk.toString();
-    });
-    request.on('end', () => {
-      // const parsedBody = JSON.parse(body);
-      let parsedBody;
-      try {
-        parsedBody = JSON.parse(body);
-      } catch (err) {
-        // Xử lý lỗi khi parse JSON
+    const parsedUrl = url.parse(request.url, true);
+    const taskId = parsedUrl.query.taskId;
+
+    if (taskId) {
+      let index = data.findIndex(data => data.taskId === taskId);
+      if (index !== -1) {
+        data.splice(index, 1);
+        helpers.writeFileDataJson(tasksDataFilePath, data);
         helpers.writeResponse(
-          tasksHttpCode.BAD_REQUEST.status,  // Mã lỗi cho request không hợp lệ
-          'Invalid JSON format',  // Thông báo lỗi cụ thể
+          tasksHttpCode.UPDATE_TASK_SUCCESSFUL.status,
+          tasksHttpCode.UPDATE_TASK_SUCCESSFUL.message,
           response,
           []
         );
-        return response.end();
-      }
-      let taskId = parsedBody.taskId;
-
-      if (taskId) {
-        let index = data.findIndex(data => data.taskId === taskId);
-        if (index !== -1) {
-          data.splice(index, 1);
-          helpers.writeFileDataJson(tasksDataFilePath, data);
-          helpers.writeResponse(
-            tasksHttpCode.UPDATE_TASK_SUCCESSFUL.status,
-            tasksHttpCode.UPDATE_TASK_SUCCESSFUL.message,
-            response,
-            []
-          );
-          response.end();
-        }
-        else {
-          helpers.writeResponse(
-            tasksHttpCode.TASK_NOT_FOUND.status,
-            tasksHttpCode.TASK_NOT_FOUND.message,
-            response,
-            []
-          );
-          response.end();
-        }
+        response.end();
       }
       else {
         helpers.writeResponse(
-          tasksHttpCode.SYSTEM_ERROR.status,
-          tasksHttpCode.SYSTEM_ERROR.message,
+          tasksHttpCode.TASK_NOT_FOUND.status,
+          tasksHttpCode.TASK_NOT_FOUND.message,
           response,
-          []);
+          []
+        );
         response.end();
       }
-    });
+    }
+    else {
+      helpers.writeResponse(
+        tasksHttpCode.SYSTEM_ERROR.status,
+        tasksHttpCode.SYSTEM_ERROR.message,
+        response,
+        []);
+      response.end();
+    }
   } catch (err) {
     helpers.writeResponse(
       tasksHttpCode.SYSTEM_ERROR.status,
