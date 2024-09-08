@@ -30,7 +30,7 @@ const HTTP_STATUS_CODE = {
   },
   TASK_NOT_FOUND:{
     message: 'Task not found',
-    status: 400,
+    status: 404,
   },
 };
 

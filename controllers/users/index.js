@@ -4,7 +4,7 @@ const middleWare = require('../../middlewares/check_token');
 const helpers = require('../../helpers/utils');
 const path = require('path');
 const fs = require('fs');
-
+const url = require('url');
 // Đường dẫn đến file JSON
 const usersDataFilePath = path.join(__dirname, '../../data/users.json');
 
@@ -123,52 +123,52 @@ exports.updateUser = (request, response) => {
   });
 };
 
-
 exports.deleteUser = (request, response) => {
-  let body = '';
-  request.on('data', (chunk) => {
-    body += chunk.toString();
-  });
-
-  request.on('end', () => {
-    try {
-      const parsedBody = JSON.parse(body); // Chuyển body từ dạng string sang JSON
-      const userId = parsedBody.userId; // Lấy userId từ body
-
-      let data = helpers.readFileDataJson(usersDataFilePath); // Đọc dữ liệu user từ file
-      const userIndex = data.findIndex(user => user.userId === userId); // Tìm vị trí user cần xóa
-
-      if (userIndex === -1) {
-        // Nếu user không tồn tại
+  debugger
+  const data = helpers.readFileDataJson(usersDataFilePath)
+  try {
+    const parsedUrl = url.parse(request.url, true);
+    const userId = parsedUrl.query.userId;
+    if (userId) {
+      let index = data.findIndex(data => data.userId === userId);
+      if (index !== -1) {
+        data.splice(index, 1);
+        helpers.writeFileDataJson(usersDataFilePath, data);
+        helpers.writeResponse(
+          userHttpCode.DELETE_USER_SUCCESSFUL.status,
+          userHttpCode.DELETE_USER_SUCCESSFUL.message,
+          response,
+          []
+        );
+        response.end();
+      }
+      else {
         helpers.writeResponse(
           userHttpCode.USER_NOT_FOUND.status,
           userHttpCode.USER_NOT_FOUND.message,
           response,
           []
         );
-      } else {
-        // Xóa user
-        data.splice(userIndex, 1); // Xóa user khỏi mảng data
-        helpers.writeFileDataJson(usersDataFilePath, data); // Ghi lại dữ liệu vào file
-
-        helpers.writeResponse(
-          userHttpCode.DELETE_USER_SUCCESSFUL.status,
-          userHttpCode.DELETE_USER_SUCCESSFUL.message,
-          response,
-          data
-        );
+        response.end();
       }
-    } catch (err) {
+    }
+    else {
       helpers.writeResponse(
         userHttpCode.SYSTEM_ERROR.status,
         userHttpCode.SYSTEM_ERROR.message,
         response,
-        []
-      );
-    } finally {
-      response.end(); // Kết thúc phản hồi
+        []);
+      response.end();
     }
-  });
+  } catch (err) {
+    helpers.writeResponse(
+      userHttpCode.SYSTEM_ERROR.status,
+      userHttpCode.SYSTEM_ERROR.message,
+      response,
+      []
+    );
+    response.end();
+  }
 };
 
 exports.login = (request, response) => {

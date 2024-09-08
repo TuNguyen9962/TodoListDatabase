@@ -1,11 +1,5 @@
 [
   {
-    "taskId": "2",
-    "userId": 2,
-    "name": "Todo 2",
-    "isDone": false
-  },
-  {
     "taskId": "3",
     "userId": 1,
     "name": "Làm bài tập về nhà thứ 3 trong tuần",
