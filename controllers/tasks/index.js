@@ -7,9 +7,10 @@ const url = require('url');
 // Đường dẫn đến file JSON
 const tasksDataFilePath = path.join(__dirname, '../../data/tasks.json');
 
-exports.getUserTask = (request, response) => {
+exports.getUserTask = (request,response) => {
   try {
     const data = helpers.readFileDataJson(tasksDataFilePath)
+    
     helpers.writeResponse(
       tasksHttpCode.GET_TASK_SUCCESSFUL.status,
       tasksHttpCode.GET_TASK_SUCCESSFUL.message,
@@ -27,6 +28,7 @@ exports.getUserTask = (request, response) => {
     response.end();
   }
 };
+
 exports.createUserTask = (request, response) => {
   try {
     const data = helpers.readFileDataJson(tasksDataFilePath)
@@ -78,6 +80,7 @@ exports.createUserTask = (request, response) => {
     response.end();
   }
 };
+
 exports.updateUserTask = (request, response) => {
   try {
     const data = helpers.readFileDataJson(tasksDataFilePath)
@@ -95,7 +98,7 @@ exports.updateUserTask = (request, response) => {
       let userId = parsedBody.userId;
       let taskId = parsedBody.taskId;
       if (name && isDone && userId && taskId) {
-        let task = {
+        task = {
           taskId: taskId,
           userId: userId,
           name: name,
@@ -115,8 +118,8 @@ exports.updateUserTask = (request, response) => {
         }
         else {
           helpers.writeResponse(
-            tasksHttpCode.BAD_REQUEST.status,
-            tasksHttpCode.BAD_REQUEST.message,
+            tasksHttpCode.TASK_NOT_FOUND.status,
+            tasksHttpCode.TASK_NOT_FOUND.message,
             response,
             []
           );
@@ -146,22 +149,21 @@ exports.updateUserTask = (request, response) => {
     response.end();
   }
 };
-exports.deleteUserTask = async (request, response) => {
-  debugger
-  const data = helpers.readFileDataJson(tasksDataFilePath)
 
+exports.deleteUserTask = async (request, response) => {
+  const data = helpers.readFileDataJson(tasksDataFilePath)
+  debugger
   try {
     const parsedUrl = url.parse(request.url, true);
     const taskId = parsedUrl.query.taskId;
-
     if (taskId) {
       let index = data.findIndex(data => data.taskId === taskId);
       if (index !== -1) {
         data.splice(index, 1);
         helpers.writeFileDataJson(tasksDataFilePath, data);
         helpers.writeResponse(
-          tasksHttpCode.UPDATE_TASK_SUCCESSFUL.status,
-          tasksHttpCode.UPDATE_TASK_SUCCESSFUL.message,
+          tasksHttpCode.DELETE_TASK_SUCCESSFUL.status,
+          tasksHttpCode.DELETE_TASK_SUCCESSFUL.message,
           response,
           []
         );
@@ -179,8 +181,8 @@ exports.deleteUserTask = async (request, response) => {
     }
     else {
       helpers.writeResponse(
-        tasksHttpCode.SYSTEM_ERROR.status,
-        tasksHttpCode.SYSTEM_ERROR.message,
+        tasksHttpCode.BAD_REQUEST.status,
+        tasksHttpCode.BAD_REQUEST.message,
         response,
         []);
       response.end();
