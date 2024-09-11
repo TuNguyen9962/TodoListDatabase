@@ -2,7 +2,7 @@ const fs = require('fs');
 
 function writeResponse (httpCode, message , response, data) {
   response.setHeader('Access-Control-Allow-Origin', '*');  // Allows requests from any origin
-  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  response.setHeader('Access-Control-Allow-Headers', ['Content-Type', 'Authorization']);
   response.end(JSON.stringify({
     data,
     "message" : message,
